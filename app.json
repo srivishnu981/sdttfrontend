@@ -7,7 +7,10 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "plugins": ["react-native-ble-plx"],
+    "plugins": [
+      "react-native-ble-plx",
+      "expo-secure-store"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -23,12 +26,12 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-          "permissions": [
-      "BLUETOOTH_ADVERTISE",
-      "BLUETOOTH_SCAN",
-      "BLUETOOTH_CONNECT",
-      "ACCESS_FINE_LOCATION"
-    ]
+      "permissions": [
+        "BLUETOOTH_ADVERTISE",
+        "BLUETOOTH_SCAN",
+        "BLUETOOTH_CONNECT",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

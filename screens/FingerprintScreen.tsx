@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import ScreenBackground from './components/ScreenBackground';
-import { API_URL } from './config';
+import { authFetch, clearToken } from './auth';
 
 export default function FingerprintScreen({ route, navigation }: any) {
-    const { studentId, qrData } = route.params;
+  const { studentId, qrData } = route.params;
   const [statusText, setStatusText] = useState('Tap below to verify your identity');
 
   const handleVerify = async () => {
@@ -27,31 +27,40 @@ export default function FingerprintScreen({ route, navigation }: any) {
       disableDeviceFallback: true,
     });
 
-          if (result.success) {
-        try {
-          const { sessionId, token } = JSON.parse(qrData);
-          const res = await fetch(`${API_URL}/attendance/mark`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sessionId, studentId, token }),
-          });
-          const data = await res.json();
+    if (result.success) {
+      try {
+        const { sessionId, token } = JSON.parse(qrData);
 
-          if (res.status === 409) {
-            setStatusText('QR code expired — please scan again.');
-            return;
-          }
-          if (!res.ok) {
-            setStatusText(data.error || 'Could not mark attendance. Try again.');
-            return;
-          }
-          navigation.navigate('Success', { studentId });
-        } catch (err) {
-          setStatusText('Could not reach server. Check your connection.');
+        // authFetch adds the login token; the server gets the roll no from it
+        const res = await authFetch('/attendance/mark', {
+          method: 'POST',
+          body: JSON.stringify({ sessionId, token }),
+        });
+        const data = await res.json();
+
+        if (res.status === 401) {
+          // saved login expired or is invalid -> go back to start
+          await clearToken();
+          navigation.reset({ index: 0, routes: [{ name: 'RoleSelection' }] });
+          return;
         }
-      } else {
-        setStatusText('Verification failed or cancelled. Please try again.');
-      }};
+        if (res.status === 409) {
+          setStatusText('QR code expired — please scan again.');
+          return;
+        }
+        if (!res.ok) {
+          setStatusText(data.error || 'Could not mark attendance. Try again.');
+          return;
+        }
+
+        navigation.navigate('Success', { studentId });
+      } catch (err) {
+        setStatusText('Could not reach server. Check your connection.');
+      }
+    } else {
+      setStatusText('Verification failed or cancelled. Please try again.');
+    }
+  };
 
   return (
     <ScreenBackground>
@@ -72,7 +81,13 @@ const styles = StyleSheet.create({
   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 8, textAlign: 'center' },
   subtitle: { fontSize: 16, color: '#666', marginBottom: 12 },
   note: { fontSize: 14, color: '#999', textAlign: 'center', marginBottom: 32 },
-  button: { backgroundColor: '#8b5cf6', paddingVertical: 14, paddingHorizontal: 24, borderRadius: 8, alignItems: 'center' },
+  button: {
+    backgroundColor: '#8b5cf6',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
   buttonText: { color: '#fff', fontSize: 15, fontWeight: '600' },
   card: {
     marginHorizontal: 24,
