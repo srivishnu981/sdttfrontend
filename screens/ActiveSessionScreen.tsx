@@ -1,7 +1,9 @@
+import { getAuthHeader } from './teacherApi';
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import ScreenBackground from './components/ScreenBackground';
 import { API_URL } from './config';
+
 
 export default function ActiveSessionScreen({ route, navigation }: any) {
   const { sessionId, subject, roomId } = route.params;
@@ -12,7 +14,7 @@ export default function ActiveSessionScreen({ route, navigation }: any) {
 
   const fetchQR = async () => {
     try {
-      const res = await fetch(`${API_URL}/session/qr?sessionId=${sessionId}`);
+      const res = await fetch(`${API_URL}/session/qr?sessionId=${sessionId}`, { headers: await getAuthHeader() });
       const data = await res.json();
       if (res.ok) {
         setQrImage(data.qrDataUrl);
@@ -39,7 +41,7 @@ export default function ActiveSessionScreen({ route, navigation }: any) {
     try {
       const res = await fetch(`${API_URL}/session/end`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },
         body: JSON.stringify({ sessionId }),
       });
       const data = await res.json();

@@ -20,6 +20,8 @@ import ActiveSessionScreen from './screens/ActiveSessionScreen';
 import SessionSummaryScreen from './screens/SessionSummaryScreen';
 
 import { getToken, clearToken, authFetch } from './screens/auth';
+import TeacherAttendanceScreen from './screens/TeacherAttendanceScreen';
+import ClassPercentageScreen from './screens/ClassPercentageScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -110,6 +112,8 @@ export default function App() {
           options={{ title: 'Active Session', headerBackVisible: false }}
         />
         <Stack.Screen name="SessionSummary" component={SessionSummaryScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TeacherAttendance" component={TeacherAttendanceScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ClassPercentage" component={ClassPercentageScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

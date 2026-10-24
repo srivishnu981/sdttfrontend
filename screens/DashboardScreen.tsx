@@ -1,10 +1,10 @@
-import ScreenBackground from './components/ScreenBackground';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import ScreenBackground from './components/ScreenBackground';
 import { clearToken } from './auth';
 
 export default function DashboardScreen({ route, navigation }: any) {
-  const { rollNo, name } = route.params ?? {};
+  const { rollNo } = route.params ?? {};
 
   const logout = async () => {
     await clearToken();
@@ -14,8 +14,7 @@ export default function DashboardScreen({ route, navigation }: any) {
   return (
     <ScreenBackground>
       <View style={styles.card}>
-        <Text style={styles.title}>Welcome, {name || rollNo}</Text>
-        {name && rollNo ? <Text style={styles.roll}>{rollNo}</Text> : null}
+        <Text style={styles.title}>Welcome, {rollNo}</Text>
         <Text style={styles.subtitle}>Student Dashboard</Text>
 
         <TouchableOpacity
@@ -35,28 +34,8 @@ export default function DashboardScreen({ route, navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  roll: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 40,
-  },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 4, textAlign: 'center' },
+  subtitle: { fontSize: 16, color: '#666', marginBottom: 40 },
   button: {
     backgroundColor: '#22c55e',
     paddingVertical: 14,
@@ -65,11 +44,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   logoutButton: {
     marginTop: 12,
     paddingVertical: 12,
@@ -79,11 +54,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ef4444',
   },
-  logoutText: {
-    color: '#ef4444',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  logoutText: { color: '#ef4444', fontSize: 16, fontWeight: '600' },
   card: {
     marginHorizontal: 24,
     backgroundColor: 'rgba(255,255,255,0.95)',
